@@ -1,8 +1,10 @@
 package lain.mods.cleanview;
 
 import java.lang.ref.WeakReference;
+import java.util.Collection;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.potion.PotionHelper;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -30,7 +32,7 @@ public class Proxy
     {
         FMLCommonHandler.instance().bus().register(this);
 
-        keyToggle = new KeyBinding("Toggle CleanView", 0, "key.categories.misc");
+        keyToggle = new KeyBinding("key.toggleCleanView", 0, "key.categories.misc");
         ClientRegistry.registerKeyBinding(keyToggle);
     }
 
@@ -53,7 +55,10 @@ public class Proxy
             {
                 if (prevEnt != null && prevEnt.getEntityData().getBoolean(TAG))
                 {
-                    prevEnt.removePotionEffect(0);
+                    @SuppressWarnings("rawtypes")
+                    Collection effects = prevEnt.getActivePotionEffects();
+                    if (!effects.isEmpty())
+                        prevEnt.getDataWatcher().updateObject(7, PotionHelper.calcPotionLiquidColor(effects));
                     prevEnt.getEntityData().removeTag(TAG);
                 }
                 ref = (ent != null) ? new WeakReference<EntityLivingBase>(ent) : null;
