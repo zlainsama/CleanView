@@ -1,0 +1,16 @@
+[
+{
+  "modid": "CleanView",
+  "name": "CleanView",
+  "description": "",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "https://github.com/zlainsama/cleanview",
+  "updateUrl": "https://github.com/zlainsama/cleanview/releases",
+  "authorList": ["zlainsama"],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
