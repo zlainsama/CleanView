@@ -46,9 +46,9 @@ public class CleanView
             EntityLivingBase ent = Config.ENABLED ? FMLClientHandler.instance().getClient().renderViewEntity : null;
 
             EntityLivingBase prevEnt = (ref != null) ? ref.get() : null;
-            if (prevEnt != null && prevEnt != ent)
+            if (prevEnt != ent)
             {
-                if (prevEnt.getEntityData().getBoolean(TAG))
+                if (prevEnt != null && prevEnt.getEntityData().getBoolean(TAG))
                 {
                     prevEnt.removePotionEffect(0);
                     prevEnt.getEntityData().removeTag(TAG);
