@@ -2,7 +2,6 @@ package lain.mods.cleanview;
 
 import java.lang.ref.WeakReference;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
@@ -21,7 +20,6 @@ public class CleanView
     @Mod.EventHandler
     public void handleEvent(FMLInitializationEvent event)
     {
-        MinecraftForge.EVENT_BUS.register(this);
         FMLCommonHandler.instance().bus().register(this);
     }
 
