@@ -1,22 +1,25 @@
 package lain.mods.cleanview;
 
-import net.minecraft.client.entity.EntityClientPlayerMP;
-import com.google.common.eventbus.Subscribe;
+import java.lang.ref.WeakReference;
+import net.minecraft.entity.EntityLivingBase;
+import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.event.ConfigChangedEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
-import cpw.mods.fml.common.gameevent.TickEvent.PlayerTickEvent;
 
-@Mod(modid = "CleanView", useMetadata = true, guiFactory = "lain.mods.cleanview.GuiFactory")
+@Mod(modid = "CleanView", useMetadata = true, guiFactory = "lain.mods.cleanview.GuiFactory", canBeDeactivated = false)
 public class CleanView
 {
 
     private static final String TAG = "0256d9da-9c1b-46ea-a83c-01ae6981a2c8";
 
-    @Subscribe
+    WeakReference<EntityLivingBase> ref;
+
+    @SubscribeEvent
     public void handleEvent(ConfigChangedEvent.OnConfigChangedEvent event)
     {
         if (event.modID == "CleanView")
@@ -35,24 +38,29 @@ public class CleanView
         Config.doConfig(event.getSuggestedConfigurationFile());
     }
 
-    @Subscribe
-    public void handleEvent(PlayerTickEvent event)
+    @SubscribeEvent
+    public void handleEvent(TickEvent.ClientTickEvent event)
     {
-        if (event.phase == TickEvent.Phase.START && event.player instanceof EntityClientPlayerMP)
+        if (event.phase == TickEvent.Phase.START)
         {
-            if (event.player != null)
+            EntityLivingBase ent = Config.ENABLED ? FMLClientHandler.instance().getClient().renderViewEntity : null;
+
+            EntityLivingBase prevEnt = (ref != null) ? ref.get() : null;
+            if (prevEnt != null && prevEnt != ent)
             {
-                if (Config.ENABLED)
+                if (prevEnt.getEntityData().getBoolean(TAG))
                 {
-                    event.player.getDataWatcher().updateObject(7, 0);
-                    if (!event.player.getEntityData().getBoolean(TAG))
-                        event.player.getEntityData().setBoolean(TAG, true);
+                    prevEnt.removePotionEffect(0);
+                    prevEnt.getEntityData().removeTag(TAG);
                 }
-                else if (event.player.getEntityData().getBoolean(TAG))
-                {
-                    event.player.removePotionEffect(0);
-                    event.player.getEntityData().removeTag(TAG);
-                }
+                ref = (ent != null) ? new WeakReference<EntityLivingBase>(ent) : null;
+            }
+
+            if (ent != null)
+            {
+                ent.getDataWatcher().updateObject(7, 0);
+                if (!ent.getEntityData().getBoolean(TAG))
+                    ent.getEntityData().setBoolean(TAG, true);
             }
         }
     }

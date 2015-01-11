@@ -16,7 +16,7 @@ public class Config
         try
         {
             config.load();
-            ENABLED = config.getBoolean("Enabled", Configuration.CATEGORY_GENERAL, ENABLED, null);
+            ENABLED = config.getBoolean("Enabled", Configuration.CATEGORY_GENERAL, true, "Main switch");
         }
         finally
         {
@@ -32,18 +32,18 @@ public class Config
     }
 
     @SuppressWarnings("rawtypes")
-    public static List getElements()
+    static List getElements()
     {
         return new ConfigElement(config.getCategory(Configuration.CATEGORY_GENERAL)).getChildElements();
     }
 
-    public static String getPath()
+    static String getPath()
     {
         return GuiConfig.getAbridgedConfigPath(config.toString());
     }
 
     public static boolean ENABLED = true;
 
-    private static Configuration config;
+    static Configuration config;
 
 }
