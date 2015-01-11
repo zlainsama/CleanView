@@ -1,7 +1,10 @@
 package lain.mods.cleanview;
 
 import java.io.File;
+import java.util.List;
+import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.common.config.Configuration;
+import cpw.mods.fml.client.config.GuiConfig;
 
 public class Config
 {
@@ -12,6 +15,7 @@ public class Config
             return;
         try
         {
+            config.load();
             ENABLED = config.getBoolean("Enabled", Configuration.CATEGORY_GENERAL, ENABLED, null);
         }
         finally
@@ -25,6 +29,17 @@ public class Config
     {
         config = new Configuration(fileConfig);
         doConfig();
+    }
+
+    @SuppressWarnings("rawtypes")
+    public static List getElements()
+    {
+        return new ConfigElement(config.getCategory(Configuration.CATEGORY_GENERAL)).getChildElements();
+    }
+
+    public static String getPath()
+    {
+        return GuiConfig.getAbridgedConfigPath(config.toString());
     }
 
     public static boolean ENABLED = true;
