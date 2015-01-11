@@ -2,16 +2,15 @@ package lain.mods.cleanview;
 
 import java.lang.ref.WeakReference;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.client.event.ConfigChangedEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 
-@Mod(modid = "CleanView", useMetadata = true, guiFactory = "lain.mods.cleanview.GuiFactory", canBeDeactivated = false)
+@Mod(modid = "CleanView", useMetadata = true, guiFactory = "lain.mods.cleanview.GuiFactory")
 public class CleanView
 {
 
@@ -19,23 +18,11 @@ public class CleanView
 
     WeakReference<EntityLivingBase> ref;
 
-    @SubscribeEvent
-    public void handleEvent(ConfigChangedEvent.OnConfigChangedEvent event)
-    {
-        if (event.modID == "CleanView")
-            Config.doConfig();
-    }
-
     @Mod.EventHandler
     public void handleEvent(FMLInitializationEvent event)
     {
+        MinecraftForge.EVENT_BUS.register(this);
         FMLCommonHandler.instance().bus().register(this);
-    }
-
-    @Mod.EventHandler
-    public void handleEvent(FMLPreInitializationEvent event)
-    {
-        Config.doConfig(event.getSuggestedConfigurationFile());
     }
 
     @SubscribeEvent
@@ -43,7 +30,7 @@ public class CleanView
     {
         if (event.phase == TickEvent.Phase.START)
         {
-            EntityLivingBase ent = Config.ENABLED ? FMLClientHandler.instance().getClient().renderViewEntity : null;
+            EntityLivingBase ent = FMLClientHandler.instance().getClient().renderViewEntity; // Config.ENABLED ? FMLClientHandler.instance().getClient().renderViewEntity : null;
 
             EntityLivingBase prevEnt = (ref != null) ? ref.get() : null;
             if (prevEnt != ent)
