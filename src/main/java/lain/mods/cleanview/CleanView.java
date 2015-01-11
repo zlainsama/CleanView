@@ -13,7 +13,7 @@ public class CleanView
         if (event.getSide().isClient())
             Proxy.setup();
         else
-            System.err.println("This mod is client-only, please remove this from your server");
+            System.err.println("This mod is client-only, please remove it from your server");
     }
 
 }
