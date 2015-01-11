@@ -1,14 +1,14 @@
 package lain.mods.cleanview;
 
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityClientPlayerMP;
 import com.google.common.eventbus.Subscribe;
-import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.event.ConfigChangedEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
+import cpw.mods.fml.common.gameevent.TickEvent.PlayerTickEvent;
 
 @Mod(modid = "CleanView", useMetadata = true, guiFactory = "lain.mods.cleanview.GuiFactory")
 public class CleanView
@@ -36,23 +36,22 @@ public class CleanView
     }
 
     @Subscribe
-    public void handleEvent(TickEvent.ClientTickEvent event)
+    public void handleEvent(PlayerTickEvent event)
     {
-        if (event.phase == TickEvent.Phase.START)
+        if (event.phase == TickEvent.Phase.START && event.player instanceof EntityClientPlayerMP)
         {
-            Minecraft mc = FMLClientHandler.instance().getClient();
-            if (mc.renderViewEntity != null)
+            if (event.player != null)
             {
                 if (Config.ENABLED)
                 {
-                    mc.renderViewEntity.getDataWatcher().updateObject(7, 0);
-                    if (!mc.renderViewEntity.getEntityData().getBoolean(TAG))
-                        mc.renderViewEntity.getEntityData().setBoolean(TAG, true);
+                    event.player.getDataWatcher().updateObject(7, 0);
+                    if (!event.player.getEntityData().getBoolean(TAG))
+                        event.player.getEntityData().setBoolean(TAG, true);
                 }
-                else if (mc.renderViewEntity.getEntityData().getBoolean(TAG))
+                else if (event.player.getEntityData().getBoolean(TAG))
                 {
-                    mc.renderViewEntity.removePotionEffect(0);
-                    mc.renderViewEntity.getEntityData().removeTag(TAG);
+                    event.player.removePotionEffect(0);
+                    event.player.getEntityData().removeTag(TAG);
                 }
             }
         }
