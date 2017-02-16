@@ -13,11 +13,23 @@ version = "1.10.2-v1-test"
 group= "lain.mods.cleanview"
 archivesBaseName = "CleanView"
 
+sourceCompatibility = targetCompatibility = "1.6"
+compileJava {
+    sourceCompatibility = targetCompatibility = "1.6"
+}
+
 minecraft {
     version = "1.10.2-12.18.3.2185"
     runDir = "run"
 
     mappings = "snapshot_20161111"
+}
+
+jar
+{
+    manifest {
+        attributes 'FMLAT': 'cleanview_at.cfg'
+    }
 }
 
 processResources
@@ -38,4 +50,6 @@ processResources
     {
         exclude 'mcmod.info'
     }
+
+    rename '(.+_at.cfg)', 'META-INF/$1'
 }
