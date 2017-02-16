@@ -3,14 +3,16 @@ package lain.mods.cleanview;
 import java.lang.ref.WeakReference;
 import java.util.Collection;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.potion.PotionHelper;
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.client.registry.ClientRegistry;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.InputEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
+import net.minecraft.potion.PotionEffect;
+import net.minecraft.potion.PotionUtils;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.InputEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 public class Proxy
 {
@@ -24,22 +26,35 @@ public class Proxy
     private static final String TAG = "0256d9da-9c1b-46ea-a83c-01ae6981a2c8";
     private static final Proxy INSTANCE = new Proxy();
 
-    WeakReference<EntityLivingBase> ref;
+    WeakReference<EntityLivingBase> ref = new WeakReference<EntityLivingBase>(null);
     boolean enabled = true;
     KeyBinding keyToggle;
 
     private Proxy()
     {
-        FMLCommonHandler.instance().bus().register(this);
+        MinecraftForge.EVENT_BUS.register(this);
 
         keyToggle = new KeyBinding("key.toggleCleanView", 0, "key.categories.misc");
         ClientRegistry.registerKeyBinding(keyToggle);
     }
 
+    @SuppressWarnings("unchecked")
+    private <T extends Entity> T getRenderViewEntity()
+    {
+        try
+        {
+            return (T) FMLClientHandler.instance().getClient().getRenderViewEntity();
+        }
+        catch (Error ignored)
+        {
+            return null;
+        }
+    }
+
     @SubscribeEvent
     public void handleEvent(InputEvent.KeyInputEvent event)
     {
-        if (keyToggle.getIsKeyPressed())
+        if (keyToggle.isPressed())
             enabled = !enabled;
     }
 
@@ -48,25 +63,27 @@ public class Proxy
     {
         if (event.phase == TickEvent.Phase.START)
         {
-            EntityLivingBase ent = enabled ? FMLClientHandler.instance().getClient().renderViewEntity : null;
+            EntityLivingBase ent = getRenderViewEntity();
+            EntityLivingBase prevEnt = ref.get();
 
-            EntityLivingBase prevEnt = (ref != null) ? ref.get() : null;
+            if (!enabled)
+                ent = null;
+
             if (prevEnt != ent)
             {
                 if (prevEnt != null && prevEnt.getEntityData().getBoolean(TAG))
                 {
-                    @SuppressWarnings("rawtypes")
-                    Collection effects = prevEnt.getActivePotionEffects();
+                    Collection<PotionEffect> effects = prevEnt.getActivePotionEffects();
                     if (!effects.isEmpty())
-                        prevEnt.getDataWatcher().updateObject(7, PotionHelper.calcPotionLiquidColor(effects));
+                        prevEnt.getDataManager().set(EntityLivingBase.POTION_EFFECTS, PotionUtils.getPotionColorFromEffectList(effects));
                     prevEnt.getEntityData().removeTag(TAG);
                 }
-                ref = (ent != null) ? new WeakReference<EntityLivingBase>(ent) : null;
+                ref = new WeakReference<EntityLivingBase>(ent);
             }
 
             if (ent != null)
             {
-                ent.getDataWatcher().updateObject(7, 0);
+                ent.getDataManager().set(EntityLivingBase.POTION_EFFECTS, 0);
                 if (!ent.getEntityData().getBoolean(TAG))
                     ent.getEntityData().setBoolean(TAG, true);
             }

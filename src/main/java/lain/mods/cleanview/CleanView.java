@@ -1,9 +1,9 @@
 package lain.mods.cleanview;
 
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 
-@Mod(modid = "CleanView", useMetadata = true)
+@Mod(modid = "cleanview", useMetadata = true, acceptedMinecraftVersions = "[1.10,)")
 public class CleanView
 {
 
