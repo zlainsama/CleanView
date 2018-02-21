@@ -45,7 +45,7 @@ public class Proxy
         {
             return (T) FMLClientHandler.instance().getClient().getRenderViewEntity();
         }
-        catch (Error ignored)
+        catch (Throwable ignored)
         {
             return null;
         }
