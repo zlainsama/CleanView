@@ -17,14 +17,14 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 public class Proxy
 {
 
+    private static final String TAG = "0256d9da-9c1b-46ea-a83c-01ae6981a2c8";
+    private static final Proxy INSTANCE = new Proxy();
+
     public static void setup()
     {
         if (INSTANCE == null)
             throw new RuntimeException();
     }
-
-    private static final String TAG = "0256d9da-9c1b-46ea-a83c-01ae6981a2c8";
-    private static final Proxy INSTANCE = new Proxy();
 
     WeakReference<EntityLivingBase> ref = new WeakReference<EntityLivingBase>(null);
     boolean enabled = true;
