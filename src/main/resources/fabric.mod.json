@@ -1,0 +1,13 @@
+{
+  "id": "cleanview",
+  "name": "cleanview",
+  "version": "v1-fabric",
+  "side": "universal",
+  "description": "removes potion particles from your viewpoint",
+  "license": "MIT",
+  "initializers": [
+    "lain.mods.cleanview.CleanView"
+  ],
+  "mixins": {
+  }
+}
