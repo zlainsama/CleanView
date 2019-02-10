@@ -6,7 +6,7 @@ import java.util.Collection;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.keybinding.FabricKeyBinding;
 import net.fabricmc.fabric.api.client.keybinding.KeyBindingRegistry;
-import net.fabricmc.fabric.events.client.ClientTickEvent;
+import net.fabricmc.fabric.api.event.client.ClientTickCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.entity.Entity;
@@ -89,7 +89,7 @@ public class CleanView implements ClientModInitializer
         }
 
         lastCam = new WeakReference<Entity>(null);
-        ClientTickEvent.CLIENT.register(client -> {
+        ClientTickCallback.EVENT.register(client -> {
             tickKeyBindings();
             onClientTick(client);
         });
@@ -108,7 +108,7 @@ public class CleanView implements ClientModInitializer
         {
             try
             {
-                boolean state = keyToggle.method_1434();
+                boolean state = keyToggle.isPressed();
                 if (lastState != state)
                 {
                     if (state)
