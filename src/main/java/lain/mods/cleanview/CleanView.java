@@ -1,19 +1,21 @@
 package lain.mods.cleanview;
 
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
-@Mod(modid = "cleanview", useMetadata = true, acceptedMinecraftVersions = "[1.12,)", certificateFingerprint = "aaaf83332a11df02406e9f266b1b65c1306f0f76")
+@Mod("cleanview")
 public class CleanView
 {
 
-    @Mod.EventHandler
-    public void handleEvent(FMLInitializationEvent event)
+    public CleanView()
     {
-        if (event.getSide().isClient())
-            Proxy.setup();
-        else
-            System.err.println("This mod is client-only, please remove it from your server");
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setupClient);
+    }
+
+    private void setupClient(FMLClientSetupEvent event)
+    {
+        Proxy.INSTANCE.init();
     }
 
 }

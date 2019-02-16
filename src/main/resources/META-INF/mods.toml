@@ -1,0 +1,21 @@
+modLoader="javafml"
+loaderVersion="[25,)"
+issueTrackerURL="https://github.com/zlainsama/CleanView/issues"
+displayURL="https://github.com/zlainsama/CleanView"
+#logoFile=""
+credits=""
+authors="zlainsama"
+[[mods]]
+modId="cleanview"
+version="${file.jarVersion}"
+displayName="CleanView"
+#updateJSONURL=""
+description='''
+removes potion particles from your viewpoint.
+'''
+[[dependencies.cleanview]]
+modId="forge"
+mandatory=true
+versionRange="[25,)"
+ordering="NONE"
+side="CLIENT"
