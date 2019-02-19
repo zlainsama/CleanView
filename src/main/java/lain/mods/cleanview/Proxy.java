@@ -11,7 +11,6 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.potion.PotionUtils;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 enum Proxy
@@ -20,6 +19,7 @@ enum Proxy
     INSTANCE;
 
     KeyBinding keyToggle = new KeyBinding("key.togglecleanview", InputMappings.INPUT_INVALID.getKeyCode(), "key.categories.misc");
+    boolean lastState = false;
     WeakReference<EntityLivingBase> ref = new WeakReference<>(null);
     boolean enabled = true;
 
@@ -40,6 +40,14 @@ enum Proxy
     {
         if (event.phase == TickEvent.Phase.START)
         {
+            boolean state = keyToggle.isKeyDown();
+            if (state != lastState)
+            {
+                if (lastState) // onRelease
+                    enabled = !enabled;
+                lastState = state;
+            }
+
             EntityLivingBase ent = getRenderViewEntity();
             EntityLivingBase prevEnt = ref.get();
 
@@ -62,17 +70,10 @@ enum Proxy
         }
     }
 
-    void handleKeyInputEvent(InputEvent.KeyInputEvent event)
-    {
-        if (keyToggle.isPressed())
-            enabled = !enabled;
-    }
-
     void init()
     {
         ClientRegistry.registerKeyBinding(keyToggle);
         MinecraftForge.EVENT_BUS.addListener(this::handleClientTickEvent);
-        MinecraftForge.EVENT_BUS.addListener(this::handleKeyInputEvent);
     }
 
 }
