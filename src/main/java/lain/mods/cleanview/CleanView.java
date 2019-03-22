@@ -1,7 +1,7 @@
 package lain.mods.cleanview;
 
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 
 @Mod(modid = "CleanView", useMetadata = true)
 public class CleanView
@@ -11,9 +11,7 @@ public class CleanView
     public void handleEvent(FMLInitializationEvent event)
     {
         if (event.getSide().isClient())
-            Proxy.setup();
-        else
-            System.err.println("This mod is client-only, please remove it from your server");
+            Proxy.INSTANCE.registerEvents();
     }
 
 }
