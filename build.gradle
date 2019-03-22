@@ -1,29 +1,26 @@
 buildscript {
     repositories {
-        mavenCentral()
+        jcenter()
         maven {
             name = "forge"
             url = "http://files.minecraftforge.net/maven"
         }
-        maven {
-            name = "sonatype"
-            url = "https://oss.sonatype.org/content/repositories/snapshots/"
-        }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
     }
 }
+apply plugin: 'net.minecraftforge.gradle.forge'
 
-apply plugin: 'forge'
-
-version = "1.7.10-v2"
+version = "1.8.9-v1"
 group= "lain.mods.cleanview"
 archivesBaseName = "CleanView"
 
 minecraft {
-    version = "1.7.10-10.13.2.1284"
-    runDir = "eclipse"
+    version = "1.8.9-11.15.1.2318-1.8.9"
+    runDir = "run"
+
+    mappings = "stable_20"
 }
 
 processResources
@@ -32,7 +29,7 @@ processResources
     inputs.property "mcversion", project.minecraft.version
 
     from 'LICENSE.txt'
-	
+
     from(sourceSets.main.resources.srcDirs)
     {
         include 'mcmod.info'
@@ -45,3 +42,6 @@ processResources
         exclude 'mcmod.info'
     }
 }
+
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
