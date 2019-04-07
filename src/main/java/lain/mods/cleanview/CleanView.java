@@ -37,7 +37,7 @@ public class CleanView implements ClientModInitializer
         {
             if (prevEnt instanceof LivingEntity)
             {
-                Collection<StatusEffectInstance> effects = ((LivingEntity) prevEnt).getPotionEffects();
+                Collection<StatusEffectInstance> effects = ((LivingEntity) prevEnt).getStatusEffects();
                 if (!effects.isEmpty())
                     prevEnt.getDataTracker().set(colors, PotionUtil.getColor(effects));
             }

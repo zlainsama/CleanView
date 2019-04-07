@@ -1,13 +1,28 @@
 {
+  "schemaVersion": 1,
   "id": "cleanview",
-  "name": "cleanview",
-  "version": "v1-fabric",
-  "side": "universal",
+  "version": "${version}",
+
+  "name": "CleanView",
   "description": "removes potion particles from your viewpoint",
-  "license": "MIT",
-  "initializers": [
-    "lain.mods.cleanview.CleanView"
+  "authors": [
+    "zlainsama"
   ],
-  "mixins": {
+  "contact": {
+    "sources": "https://github.com/zlainsama/CleanView"
+  },
+
+  "license": "MIT",
+
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "lain.mods.cleanview.CleanView"
+    ]
+  },
+
+  "requires": {
+    "fabricloader": ">=0.4.0",
+    "fabric": "*"
   }
 }
