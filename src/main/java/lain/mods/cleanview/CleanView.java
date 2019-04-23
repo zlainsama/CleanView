@@ -7,6 +7,7 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.keybinding.FabricKeyBinding;
 import net.fabricmc.fabric.api.client.keybinding.KeyBindingRegistry;
 import net.fabricmc.fabric.api.event.client.ClientTickCallback;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.entity.Entity;
@@ -66,26 +67,13 @@ public class CleanView implements ClientModInitializer
     {
         try
         {
-            Field f = null;
-            try
-            {
-                f = LivingEntity.class.getDeclaredField("field_6240");
-            }
-            catch (NoSuchFieldException e)
-            {
-                f = LivingEntity.class.getDeclaredField("POTION_SWIRLS_COLOR");
-            }
+            Field f = LivingEntity.class.getDeclaredField(FabricLoader.getInstance().getMappingResolver().mapFieldName("intermediary", "net.minecraft.class_1309", "field_6240", "Lnet/minecraft/class_2940;"));
             f.setAccessible(true);
             colors = (TrackedData<Integer>) f.get(null);
         }
         catch (Throwable t)
         {
-            colors = null;
-        }
-        finally
-        {
-            if (colors == null)
-                throw new IllegalStateException("[CleanView] Failed to acquire specific field for the mod.");
+            throw new IllegalStateException("[CleanView] Failed to acquire specific field for the mod.", t);
         }
 
         lastCam = new WeakReference<Entity>(null);
@@ -119,7 +107,8 @@ public class CleanView implements ClientModInitializer
             catch (Throwable t)
             {
                 keyToggle = null;
-                System.err.println("[CleanView] Failed to check KeyBinding state.");
+                t.printStackTrace();
+                System.err.println("[CleanView] Failed to check KeyBinding state, the toggle key will not work.");
             }
         }
     }

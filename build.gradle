@@ -7,7 +7,7 @@ sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
 archivesBaseName = "cleanview"
-version = "v2a-fabric"
+version = "v2b-fabric"
 
 minecraft {
 }
