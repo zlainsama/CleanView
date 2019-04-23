@@ -97,7 +97,7 @@ public class CleanView implements ClientModInitializer
 
     private void setupKeyBindings()
     {
-        keyToggle = FabricKeyBinding.Builder.create(Identifier.create("cleanview:togglecleanview"), InputUtil.Type.KEY_KEYBOARD, InputUtil.UNKNOWN_KEYCODE.getKeyCode(), "key.categories.misc").build();
+        keyToggle = FabricKeyBinding.Builder.create(Identifier.create("cleanview:togglecleanview"), InputUtil.Type.KEYSYM, InputUtil.UNKNOWN_KEYCODE.getKeyCode(), "key.categories.misc").build();
         if (!KeyBindingRegistry.INSTANCE.register(keyToggle))
             keyToggle = null;
     }
