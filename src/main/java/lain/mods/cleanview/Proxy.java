@@ -5,7 +5,6 @@ import java.util.Collection;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.util.InputMappings;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.potion.PotionUtils;
@@ -23,19 +22,6 @@ enum Proxy
     WeakReference<EntityLivingBase> ref = new WeakReference<>(null);
     boolean enabled = true;
 
-    @SuppressWarnings("unchecked")
-    <T extends Entity> T getRenderViewEntity()
-    {
-        try
-        {
-            return (T) Minecraft.getInstance().getRenderViewEntity();
-        }
-        catch (Throwable ignored)
-        {
-            return null;
-        }
-    }
-
     void handleClientTickEvent(TickEvent.ClientTickEvent event)
     {
         if (event.phase == TickEvent.Phase.START)
@@ -48,7 +34,15 @@ enum Proxy
                 lastState = state;
             }
 
-            EntityLivingBase ent = getRenderViewEntity();
+            EntityLivingBase ent;
+            try
+            {
+                ent = (EntityLivingBase) Minecraft.getInstance().getRenderViewEntity();
+            }
+            catch (Throwable ignored)
+            {
+                ent = null;
+            }
             EntityLivingBase prevEnt = ref.get();
 
             if (!enabled)
