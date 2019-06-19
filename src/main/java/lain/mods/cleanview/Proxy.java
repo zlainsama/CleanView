@@ -3,7 +3,6 @@ package lain.mods.cleanview;
 import java.lang.ref.WeakReference;
 import java.util.Collection;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.potion.PotionUtils;
@@ -38,19 +37,6 @@ public class Proxy
         ClientRegistry.registerKeyBinding(keyToggle);
     }
 
-    @SuppressWarnings("unchecked")
-    private <T extends Entity> T getRenderViewEntity()
-    {
-        try
-        {
-            return (T) FMLClientHandler.instance().getClient().getRenderViewEntity();
-        }
-        catch (Throwable ignored)
-        {
-            return null;
-        }
-    }
-
     @SubscribeEvent
     public void handleEvent(InputEvent.KeyInputEvent event)
     {
@@ -63,7 +49,15 @@ public class Proxy
     {
         if (event.phase == TickEvent.Phase.START)
         {
-            EntityLivingBase ent = getRenderViewEntity();
+            EntityLivingBase ent;
+            try
+            {
+                ent = (EntityLivingBase) FMLClientHandler.instance().getClient().getRenderViewEntity();
+            }
+            catch (Throwable ignored)
+            {
+                ent = null;
+            }
             EntityLivingBase prevEnt = ref.get();
 
             if (!enabled)
