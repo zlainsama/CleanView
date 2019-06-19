@@ -21,7 +21,6 @@ sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = co
 
 minecraft {
     mappings channel: 'snapshot', version: '20190608-1.14.2'
-    accessTransformer = file('$rootDir/src/main/resources/META-INF/accesstransformer.cfg')
 }
 
 dependencies {
