@@ -16,6 +16,6 @@ removes potion particles from your viewpoint.
 [[dependencies.cleanview]]
 modId="forge"
 mandatory=true
-versionRange="[25,)"
+versionRange="[28.0.45,)"
 ordering="NONE"
 side="CLIENT"
