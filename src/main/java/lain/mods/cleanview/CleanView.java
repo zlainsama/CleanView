@@ -45,7 +45,7 @@ public class CleanView implements ClientModInitializer
             lastCam = new WeakReference<Entity>(ent);
         }
 
-        if (ent != null)
+        if (ent instanceof LivingEntity)
             ent.getDataTracker().set(colors, 0);
     }
 
