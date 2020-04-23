@@ -56,7 +56,7 @@ enum Proxy
                 lastCam = new WeakReference<>(ent);
             }
 
-            if (ent != null)
+            if (ent instanceof LivingEntity)
                 ent.getDataManager().set(potionEffects, 0);
         }
     }
