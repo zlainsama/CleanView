@@ -3,24 +3,24 @@ package lain.mods.cleanview;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 import java.util.Collection;
+import org.lwjgl.glfw.GLFW;
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.keybinding.FabricKeyBinding;
-import net.fabricmc.fabric.api.client.keybinding.KeyBindingRegistry;
-import net.fabricmc.fabric.api.event.client.ClientTickCallback;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.potion.PotionUtil;
-import net.minecraft.util.Identifier;
 
 public class CleanView implements ClientModInitializer
 {
 
-    private FabricKeyBinding keyToggle;
+    private KeyBinding keyToggle;
     private boolean lastState;
     private boolean disabled;
     private TrackedData<Integer> colors;
@@ -56,7 +56,7 @@ public class CleanView implements ClientModInitializer
         setupEvents();
     }
 
-    private void onKeyBindingActivate(FabricKeyBinding keybinding)
+    private void onKeyBindingActivate(KeyBinding keybinding)
     {
         if (keybinding == keyToggle)
             disabled = !disabled;
@@ -77,7 +77,7 @@ public class CleanView implements ClientModInitializer
         }
 
         lastCam = new WeakReference<Entity>(null);
-        ClientTickCallback.EVENT.register(client -> {
+        ClientTickEvents.END_CLIENT_TICK.register(client -> {
             tickKeyBindings();
             onClientTick(client);
         });
@@ -85,9 +85,7 @@ public class CleanView implements ClientModInitializer
 
     private void setupKeyBindings()
     {
-        keyToggle = FabricKeyBinding.Builder.create(Identifier.tryParse("cleanview:togglecleanview"), InputUtil.Type.KEYSYM, InputUtil.UNKNOWN_KEYCODE.getKeyCode(), "key.categories.misc").build();
-        if (!KeyBindingRegistry.INSTANCE.register(keyToggle))
-            keyToggle = null;
+        keyToggle = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.cleanview.togglecleanview", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN, "key.categories.misc"));
     }
 
     private void tickKeyBindings()
