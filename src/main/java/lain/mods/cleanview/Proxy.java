@@ -34,7 +34,7 @@ enum Proxy
             boolean state = keyToggle.isKeyDown();
             if (state != lastState)
             {
-                if (lastState) // onRelease
+                if (state) // onPressed
                     enabled = !enabled;
                 lastState = state;
             }
