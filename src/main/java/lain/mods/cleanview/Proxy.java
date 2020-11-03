@@ -1,8 +1,5 @@
 package lain.mods.cleanview;
 
-import java.lang.ref.WeakReference;
-import java.lang.reflect.Field;
-import java.util.Collection;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.util.InputMappings;
@@ -15,25 +12,24 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 
-enum Proxy
-{
+import java.lang.ref.WeakReference;
+import java.lang.reflect.Field;
+import java.util.Collection;
+
+enum Proxy {
 
     INSTANCE;
 
     KeyBinding keyToggle = new KeyBinding("key.togglecleanview", InputMappings.INPUT_INVALID.getKeyCode(), "key.categories.misc");
     boolean lastState = false;
+    boolean enabled = true;
     DataParameter<Integer> potionEffects = null;
     WeakReference<Entity> lastCam = new WeakReference<>(null);
 
-    boolean enabled = true;
-
-    void handleClientTickEvent(TickEvent.ClientTickEvent event)
-    {
-        if (event.phase == TickEvent.Phase.START)
-        {
+    void handleClientTickEvent(TickEvent.ClientTickEvent event) {
+        if (event.phase == TickEvent.Phase.START) {
             boolean state = keyToggle.isKeyDown();
-            if (state != lastState)
-            {
+            if (state != lastState) {
                 if (state) // onPressed
                     enabled = !enabled;
                 lastState = state;
@@ -45,10 +41,8 @@ enum Proxy
             if (!enabled)
                 ent = null;
 
-            if (prevEnt != ent)
-            {
-                if (prevEnt instanceof LivingEntity)
-                {
+            if (prevEnt != ent) {
+                if (prevEnt instanceof LivingEntity) {
                     Collection<EffectInstance> effects = ((LivingEntity) prevEnt).getActivePotionEffects();
                     if (!effects.isEmpty())
                         prevEnt.getDataManager().set(potionEffects, PotionUtils.getPotionColorFromEffectList(effects));
@@ -61,8 +55,7 @@ enum Proxy
         }
     }
 
-    void init()
-    {
+    void init() {
         setup();
 
         ClientRegistry.registerKeyBinding(keyToggle);
@@ -70,37 +63,26 @@ enum Proxy
     }
 
     @SuppressWarnings("unchecked")
-    void setup()
-    {
+    void setup() {
         Throwable t = null;
         Field f;
-        try
-        {
+        try {
             f = LivingEntity.class.getDeclaredField("field_184633_f");
-        }
-        catch (Throwable t1)
-        {
+        } catch (Throwable t1) {
             t = t1;
-            try
-            {
+            try {
                 f = LivingEntity.class.getDeclaredField("POTION_EFFECTS");
-            }
-            catch (Throwable t2)
-            {
+            } catch (Throwable t2) {
                 t.addSuppressed(t2);
                 f = null;
             }
         }
-        try
-        {
-            if (f != null)
-            {
+        try {
+            if (f != null) {
                 f.setAccessible(true);
                 potionEffects = (DataParameter<Integer>) f.get(null);
             }
-        }
-        catch (Throwable t3)
-        {
+        } catch (Throwable t3) {
             if (t == null)
                 t = t3;
             else

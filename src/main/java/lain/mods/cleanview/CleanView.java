@@ -5,16 +5,13 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 @Mod("cleanview")
-public class CleanView
-{
+public class CleanView {
 
-    public CleanView()
-    {
+    public CleanView() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setupClient);
     }
 
-    private void setupClient(FMLClientSetupEvent event)
-    {
+    private void setupClient(FMLClientSetupEvent event) {
         Proxy.INSTANCE.init();
     }
 
