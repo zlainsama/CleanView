@@ -20,7 +20,7 @@ enum Proxy {
 
     INSTANCE;
 
-    KeyBinding keyToggle = new KeyBinding("key.togglecleanview", InputMappings.INPUT_INVALID.getKeyCode(), "key.categories.misc");
+    KeyBinding keyToggle = new KeyBinding("key.togglecleanview", InputMappings.UNKNOWN.getValue(), "key.categories.misc");
     boolean lastState = false;
     boolean enabled = true;
     DataParameter<Integer> potionEffects = null;
@@ -28,14 +28,14 @@ enum Proxy {
 
     void handleClientTickEvent(TickEvent.ClientTickEvent event) {
         if (event.phase == TickEvent.Phase.START) {
-            boolean state = keyToggle.isKeyDown();
+            boolean state = keyToggle.isDown();
             if (state != lastState) {
                 if (state) // onPressed
                     enabled = !enabled;
                 lastState = state;
             }
 
-            Entity ent = Minecraft.getInstance().getRenderViewEntity();
+            Entity ent = Minecraft.getInstance().getCameraEntity();
             Entity prevEnt = lastCam.get();
 
             if (!enabled)
@@ -43,15 +43,15 @@ enum Proxy {
 
             if (prevEnt != ent) {
                 if (prevEnt instanceof LivingEntity) {
-                    Collection<EffectInstance> effects = ((LivingEntity) prevEnt).getActivePotionEffects();
+                    Collection<EffectInstance> effects = ((LivingEntity) prevEnt).getActiveEffects();
                     if (!effects.isEmpty())
-                        prevEnt.getDataManager().set(potionEffects, PotionUtils.getPotionColorFromEffectList(effects));
+                        prevEnt.getEntityData().set(potionEffects, PotionUtils.getColor(effects));
                 }
                 lastCam = new WeakReference<>(ent);
             }
 
             if (ent instanceof LivingEntity)
-                ent.getDataManager().set(potionEffects, 0);
+                ent.getEntityData().set(potionEffects, 0);
         }
     }
 
@@ -71,7 +71,7 @@ enum Proxy {
         } catch (Throwable t1) {
             t = t1;
             try {
-                f = LivingEntity.class.getDeclaredField("POTION_EFFECTS");
+                f = LivingEntity.class.getDeclaredField("DATA_EFFECT_COLOR_ID");
             } catch (Throwable t2) {
                 t.addSuppressed(t2);
                 f = null;
