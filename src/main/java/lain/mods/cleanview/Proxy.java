@@ -1,16 +1,17 @@
 package lain.mods.cleanview;
 
+import com.mojang.blaze3d.platform.InputConstants;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.client.util.InputMappings;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.PotionUtils;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fmlclient.registry.ClientRegistry;
+import org.lwjgl.glfw.GLFW;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
@@ -20,10 +21,10 @@ enum Proxy {
 
     INSTANCE;
 
-    KeyBinding keyToggle = new KeyBinding("key.togglecleanview", InputMappings.UNKNOWN.getValue(), "key.categories.misc");
+    KeyMapping keyToggle = new KeyMapping("key.togglecleanview", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN, "key.categories.misc");
     boolean lastState = false;
     boolean enabled = true;
-    DataParameter<Integer> potionEffects = null;
+    EntityDataAccessor<Integer> potionEffects = null;
     WeakReference<Entity> lastCam = new WeakReference<>(null);
 
     void handleClientTickEvent(TickEvent.ClientTickEvent event) {
@@ -43,7 +44,7 @@ enum Proxy {
 
             if (prevEnt != ent) {
                 if (prevEnt instanceof LivingEntity) {
-                    Collection<EffectInstance> effects = ((LivingEntity) prevEnt).getActiveEffects();
+                    Collection<MobEffectInstance> effects = ((LivingEntity) prevEnt).getActiveEffects();
                     if (!effects.isEmpty())
                         prevEnt.getEntityData().set(potionEffects, PotionUtils.getColor(effects));
                 }
@@ -80,7 +81,7 @@ enum Proxy {
         try {
             if (f != null) {
                 f.setAccessible(true);
-                potionEffects = (DataParameter<Integer>) f.get(null);
+                potionEffects = (EntityDataAccessor<Integer>) f.get(null);
             }
         } catch (Throwable t3) {
             if (t == null)
