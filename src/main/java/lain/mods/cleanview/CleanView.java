@@ -1,5 +1,6 @@
 package lain.mods.cleanview;
 
+import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.fml.IExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -17,6 +18,10 @@ public class CleanView {
 
     private void setupClient(FMLClientSetupEvent event) {
         Proxy.INSTANCE.init();
+    }
+
+    private void setupKeyMappings(RegisterKeyMappingsEvent event) {
+        Proxy.INSTANCE.registerKeyMappings(event::register);
     }
 
 }

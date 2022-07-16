@@ -8,7 +8,6 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.alchemy.PotionUtils;
-import net.minecraftforge.client.ClientRegistry;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import org.lwjgl.glfw.GLFW;
@@ -16,6 +15,7 @@ import org.lwjgl.glfw.GLFW;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 import java.util.Collection;
+import java.util.function.Consumer;
 
 enum Proxy {
 
@@ -59,7 +59,6 @@ enum Proxy {
     void init() {
         setup();
 
-        ClientRegistry.registerKeyBinding(keyToggle);
         MinecraftForge.EVENT_BUS.addListener(this::handleClientTickEvent);
     }
 
@@ -91,6 +90,10 @@ enum Proxy {
         }
         if (potionEffects == null)
             throw new IllegalStateException("[CleanView] Failed to acquire specific field for the mod.", t);
+    }
+
+    void registerKeyMappings(Consumer<KeyMapping> register) {
+        register.accept(keyToggle);
     }
 
 }
