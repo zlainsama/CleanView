@@ -1,6 +1,8 @@
 package lain.mods.cleanview;
 
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.IExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -14,6 +16,9 @@ public class CleanView {
         ModLoadingContext.get().registerExtensionPoint(IExtensionPoint.DisplayTest.class, () -> new IExtensionPoint.DisplayTest(() -> "client-only", (v, n) -> n));
 
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setupClient);
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
+            FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setupKeyMappings);
+        });
     }
 
     private void setupClient(FMLClientSetupEvent event) {
