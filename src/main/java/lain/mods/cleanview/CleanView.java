@@ -39,7 +39,7 @@ public class CleanView implements ClientModInitializer {
                 if (!effects.isEmpty())
                     prevEnt.getDataTracker().set(colors, PotionUtil.getColor(effects));
             }
-            lastCam = new WeakReference<Entity>(ent);
+            lastCam = new WeakReference<>(ent);
         }
 
         if (ent instanceof LivingEntity)
@@ -67,7 +67,7 @@ public class CleanView implements ClientModInitializer {
             throw new IllegalStateException("[CleanView] Failed to acquire specific field for the mod.", t);
         }
 
-        lastCam = new WeakReference<Entity>(null);
+        lastCam = new WeakReference<>(null);
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             tickKeyBindings();
             onClientTick(client);
