@@ -8,8 +8,8 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.alchemy.PotionUtils;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.TickEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.TickEvent;
 import org.lwjgl.glfw.GLFW;
 
 import java.lang.ref.WeakReference;
@@ -59,7 +59,7 @@ enum Proxy {
     void init() {
         setup();
 
-        MinecraftForge.EVENT_BUS.addListener(this::handleClientTickEvent);
+        NeoForge.EVENT_BUS.addListener(this::handleClientTickEvent);
     }
 
     @SuppressWarnings("unchecked")
