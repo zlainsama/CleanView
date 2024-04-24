@@ -11,19 +11,19 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.potion.PotionUtil;
+import net.minecraft.particle.ParticleEffect;
 import org.lwjgl.glfw.GLFW;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
-import java.util.Collection;
+import java.util.List;
 
 public class CleanView implements ClientModInitializer {
 
     private KeyBinding keyToggle;
     private boolean lastState;
     private boolean disabled;
-    private TrackedData<Integer> colors;
+    private TrackedData<List<ParticleEffect>> colors;
     private WeakReference<Entity> lastCam;
 
     private void onClientTick(MinecraftClient client) {
@@ -35,15 +35,15 @@ public class CleanView implements ClientModInitializer {
 
         if (prevEnt != ent) {
             if (prevEnt instanceof LivingEntity) {
-                Collection<StatusEffectInstance> effects = ((LivingEntity) prevEnt).getStatusEffects();
+                List<ParticleEffect> effects = (((LivingEntity) prevEnt).getActiveStatusEffects()).values().stream().filter(StatusEffectInstance::shouldShowParticles).map(StatusEffectInstance::createParticle).toList();
                 if (!effects.isEmpty())
-                    prevEnt.getDataTracker().set(colors, PotionUtil.getColor(effects));
+                    prevEnt.getDataTracker().set(colors, effects);
             }
             lastCam = new WeakReference<>(ent);
         }
 
         if (ent instanceof LivingEntity)
-            ent.getDataTracker().set(colors, 0);
+            ent.getDataTracker().set(colors, List.of());
     }
 
     @Override
@@ -60,9 +60,9 @@ public class CleanView implements ClientModInitializer {
     @SuppressWarnings("unchecked")
     private void setupEvents() {
         try {
-            Field f = LivingEntity.class.getDeclaredField(FabricLoader.getInstance().getMappingResolver().mapFieldName("intermediary", "net.minecraft.class_1309", "field_6240", "Lnet/minecraft/class_2940;"));
+            Field f = LivingEntity.class.getDeclaredField(FabricLoader.getInstance().getMappingResolver().mapFieldName("intermediary", "net.minecraft.class_1309", "field_49792", "Lnet/minecraft/class_2940;"));
             f.setAccessible(true);
-            colors = (TrackedData<Integer>) f.get(null);
+            colors = (TrackedData<List<ParticleEffect>>) f.get(null);
         } catch (Throwable t) {
             throw new IllegalStateException("[CleanView] Failed to acquire specific field for the mod.", t);
         }
