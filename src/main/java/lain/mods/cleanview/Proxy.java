@@ -8,8 +8,8 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.TickEvent;
 import org.lwjgl.glfw.GLFW;
 
 import java.lang.ref.WeakReference;
@@ -27,33 +27,31 @@ enum Proxy {
     EntityDataAccessor<List<ParticleOptions>> effectParticles = null;
     WeakReference<Entity> lastCam = new WeakReference<>(null);
 
-    void handleClientTickEvent(TickEvent.ClientTickEvent event) {
-        if (event.phase == TickEvent.Phase.START) {
-            boolean state = keyToggle.isDown();
-            if (state != lastState) {
-                if (state) // onPressed
-                    enabled = !enabled;
-                lastState = state;
-            }
-
-            Entity ent = Minecraft.getInstance().getCameraEntity();
-            Entity prevEnt = lastCam.get();
-
-            if (!enabled)
-                ent = null;
-
-            if (prevEnt != ent) {
-                if (prevEnt instanceof LivingEntity) {
-                    List<ParticleOptions> particles = ((LivingEntity) prevEnt).getActiveEffectsMap().values().stream().filter(MobEffectInstance::isVisible).map(MobEffectInstance::getParticleOptions).toList();
-                    if (!particles.isEmpty())
-                        prevEnt.getEntityData().set(effectParticles, particles);
-                }
-                lastCam = new WeakReference<>(ent);
-            }
-
-            if (ent instanceof LivingEntity)
-                ent.getEntityData().set(effectParticles, List.of());
+    void handleClientTickEvent(ClientTickEvent.Pre event) {
+        boolean state = keyToggle.isDown();
+        if (state != lastState) {
+            if (state) // onPressed
+                enabled = !enabled;
+            lastState = state;
         }
+
+        Entity ent = Minecraft.getInstance().getCameraEntity();
+        Entity prevEnt = lastCam.get();
+
+        if (!enabled)
+            ent = null;
+
+        if (prevEnt != ent) {
+            if (prevEnt instanceof LivingEntity) {
+                List<ParticleOptions> particles = ((LivingEntity) prevEnt).getActiveEffectsMap().values().stream().filter(MobEffectInstance::isVisible).map(MobEffectInstance::getParticleOptions).toList();
+                if (!particles.isEmpty())
+                    prevEnt.getEntityData().set(effectParticles, particles);
+            }
+            lastCam = new WeakReference<>(ent);
+        }
+
+        if (ent instanceof LivingEntity)
+            ent.getEntityData().set(effectParticles, List.of());
     }
 
     void init() {
