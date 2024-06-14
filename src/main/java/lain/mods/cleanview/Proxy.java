@@ -27,33 +27,31 @@ enum Proxy {
     EntityDataAccessor<List<ParticleOptions>> potionEffects = null;
     WeakReference<Entity> lastCam = new WeakReference<>(null);
 
-    void handleClientTickEvent(TickEvent.ClientTickEvent event) {
-        if (event.phase == TickEvent.Phase.START) {
-            boolean state = keyToggle.isDown();
-            if (state != lastState) {
-                if (state) // onPressed
-                    enabled = !enabled;
-                lastState = state;
-            }
-
-            Entity ent = Minecraft.getInstance().getCameraEntity();
-            Entity prevEnt = lastCam.get();
-
-            if (!enabled)
-                ent = null;
-
-            if (prevEnt != ent) {
-                if (prevEnt instanceof LivingEntity) {
-                    List<ParticleOptions> list = ((LivingEntity) prevEnt).getActiveEffects().stream().filter(MobEffectInstance::isVisible).map(MobEffectInstance::getParticleOptions).toList();
-                    if (!list.isEmpty())
-                        prevEnt.getEntityData().set(potionEffects, list);
-                }
-                lastCam = new WeakReference<>(ent);
-            }
-
-            if (ent instanceof LivingEntity)
-                ent.getEntityData().set(potionEffects, List.of());
+    void handleClientTickEvent(TickEvent.ClientTickEvent.Pre event) {
+        boolean state = keyToggle.isDown();
+        if (state != lastState) {
+            if (state) // onPressed
+                enabled = !enabled;
+            lastState = state;
         }
+
+        Entity ent = Minecraft.getInstance().getCameraEntity();
+        Entity prevEnt = lastCam.get();
+
+        if (!enabled)
+            ent = null;
+
+        if (prevEnt != ent) {
+            if (prevEnt instanceof LivingEntity) {
+                List<ParticleOptions> list = ((LivingEntity) prevEnt).getActiveEffects().stream().filter(MobEffectInstance::isVisible).map(MobEffectInstance::getParticleOptions).toList();
+                if (!list.isEmpty())
+                    prevEnt.getEntityData().set(potionEffects, list);
+            }
+            lastCam = new WeakReference<>(ent);
+        }
+
+        if (ent instanceof LivingEntity)
+            ent.getEntityData().set(potionEffects, List.of());
     }
 
     void init() {
