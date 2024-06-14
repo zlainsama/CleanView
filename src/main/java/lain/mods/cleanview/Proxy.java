@@ -74,12 +74,7 @@ enum Proxy {
                 f = LivingEntity.class.getDeclaredField("f_314048_");
             } catch (Throwable t2) {
                 t.addSuppressed(t2);
-                try {
-                    f = LivingEntity.class.getDeclaredField("bL");
-                } catch (Throwable t3) {
-                    t.addSuppressed(t3);
-                    f = null;
-                }
+                f = null;
             }
         }
         try {
