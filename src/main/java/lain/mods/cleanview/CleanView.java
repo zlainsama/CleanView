@@ -10,10 +10,10 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 @Mod("cleanview")
 public class CleanView {
 
-    public CleanView() {
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setupClient);
+    public CleanView(FMLJavaModLoadingContext context) {
+        context.getModEventBus().addListener(this::setupClient);
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
-            FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setupKeyMappings);
+            context.getModEventBus().addListener(this::setupKeyMappings);
         });
     }
 
